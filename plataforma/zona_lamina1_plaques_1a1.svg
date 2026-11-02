@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="420mm" height="230mm" viewBox="0 0 420 230">
+  <title>Zona de color - làmina 1 de 2: plaques</title>
+  <metadata>Unitats: mm. Vermell = tall, blau = gravat. Kerf de 0.15 mm incorporat.</metadata>
+  <style>
+    .cut { fill:none; stroke:#ff0000; stroke-width:0.10; }
+    .label { fill:#0066ff; font-family:Arial,sans-serif; font-size:4px; }
+  </style>
+
+<rect class="cut" x="7.925" y="7.925" width="200.15" height="100.15"/>
+<rect class="cut" x="44.55" y="99.05" width="29.9" height="2.9"/>
+<rect class="cut" x="141.55" y="99.05" width="29.9" height="2.9"/>
+<rect class="cut" x="16.05" y="43.05" width="2.9" height="29.9"/>
+<rect class="cut" x="197.05" y="43.05" width="2.9" height="29.9"/>
+<text class="label" x="88" y="13">PLACA MASSISSA</text>
+<rect class="cut" x="7.925" y="115.925" width="200.15" height="100.15"/>
+<circle class="cut" cx="58" cy="166" r="34.925"/>
+<circle class="cut" cx="158" cy="166" r="34.925"/>
+<text class="label" x="88" y="121">CAPA AMB FORATS 1</text>
+<rect class="cut" x="211.925" y="115.925" width="200.15" height="100.15"/>
+<circle class="cut" cx="262" cy="166" r="34.925"/>
+<circle class="cut" cx="362" cy="166" r="34.925"/>
+<text class="label" x="292" y="121">CAPA AMB FORATS 2</text>
+</svg>

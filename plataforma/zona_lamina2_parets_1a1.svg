@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="420mm" height="230mm" viewBox="0 0 420 230">
+  <title>Zona de color - làmina 2 de 2: parets</title>
+  <metadata>Unitats: mm. Vermell = tall, blau = gravat. Kerf de 0.15 mm incorporat.</metadata>
+  <style>
+    .cut { fill:none; stroke:#ff0000; stroke-width:0.10; }
+    .label { fill:#0066ff; font-family:Arial,sans-serif; font-size:4px; }
+  </style>
+
+<polygon class="cut" points="7.925,10.925 41.425,10.925 41.425,7.925 71.575,7.925 71.575,10.925 138.425,10.925 138.425,7.925 168.575,7.925 168.575,10.925 202.075,10.925 202.075,102.075 7.925,102.075"/>
+<rect class="cut" x="13.05" y="72.55" width="2.9" height="14.9"/>
+<rect class="cut" x="13.05" y="28.55" width="2.9" height="14.9"/>
+<rect class="cut" x="194.05" y="72.55" width="2.9" height="14.9"/>
+<rect class="cut" x="194.05" y="28.55" width="2.9" height="14.9"/>
+<text class="label" x="88" y="56.5">POSTERIOR</text>
+<polygon class="cut" points="11.925,112.925 40.925,112.925 40.925,109.925 71.075,109.925 71.075,112.925 97.075,112.925 97.075,130.425 100.075,130.425 100.075,145.575 97.075,145.575 97.075,174.425 100.075,174.425 100.075,189.575 97.075,189.575 97.075,204.075 11.925,204.075"/>
+<text class="label" x="32" y="158.5">LATERAL 1</text>
+<polygon class="cut" points="107.925,112.925 136.925,112.925 136.925,109.925 167.075,109.925 167.075,112.925 193.075,112.925 193.075,130.425 196.075,130.425 196.075,145.575 193.075,145.575 193.075,174.425 196.075,174.425 196.075,189.575 193.075,189.575 193.075,204.075 107.925,204.075"/>
+<text class="label" x="128" y="158.5">LATERAL 2</text>
+</svg>

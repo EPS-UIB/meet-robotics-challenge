@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="200mm" height="90mm" viewBox="0 0 200 90">
+  <title>Calibratge d'encaixos per contraxapat de 3 mm</title>
+  <desc>Prova de nou amplades acabades i tres unions planes de 8 mm.</desc>
+  <metadata>Units: mm. Red = CUT, blue = SCORE/ENGRAVE. Cut paths are kerf-compensated for 0.15 mm kerf.</metadata>
+  <style>
+    .cut { fill:none; stroke:#ff0000; stroke-width:0.10; vector-effect:non-scaling-stroke; }
+    .score { fill:none; stroke:#0066ff; stroke-width:0.10; vector-effect:non-scaling-stroke; }
+    .label { fill:#0066ff; font-family:Arial,sans-serif; font-size:3px; }
+    .note { fill:#333; font-family:Arial,sans-serif; font-size:3.2px; }
+    .dim { fill:none; stroke:#555; stroke-width:0.20; marker-start:url(#arrow); marker-end:url(#arrow); }
+    .ghost { fill:#d9b77b; fill-opacity:0.58; stroke:#714d20; stroke-width:0.45; }
+    .top { fill:#e2c184; fill-opacity:1; stroke:#714d20; stroke-width:0.45; }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#555"/></marker>
+  </defs>
+
+<g id="CUT">
+<rect class="cut" x="9.925" y="17.925" width="105.15" height="28.15"/>
+<path class="cut" d="M 14.675 17.925 V 32 H 17.325 V 17.925"/>
+<path class="cut" d="M 25.65 17.925 V 32 H 28.35 V 17.925"/>
+<path class="cut" d="M 36.625 17.925 V 32 H 39.375 V 17.925"/>
+<path class="cut" d="M 47.6 17.925 V 32 H 50.4 V 17.925"/>
+<path class="cut" d="M 58.575 17.925 V 32 H 61.425 V 17.925"/>
+<path class="cut" d="M 69.55 17.925 V 32 H 72.45 V 17.925"/>
+<path class="cut" d="M 80.525 17.925 V 32 H 83.475 V 17.925"/>
+<path class="cut" d="M 91.5 17.925 V 32 H 94.5 V 17.925"/>
+<path class="cut" d="M 102.475 17.925 V 32 H 105.525 V 17.925"/>
+<rect class="cut" x="125.925" y="17.925" width="18.15" height="28.15"/>
+<rect class="cut" x="131.075" y="27.075" width="7.85" height="2.9"/>
+<rect class="cut" x="148.925" y="17.925" width="18.15" height="28.15"/>
+<rect class="cut" x="154.075" y="27.075" width="7.9" height="2.9"/>
+<rect class="cut" x="171.925" y="17.925" width="18.15" height="28.15"/>
+<rect class="cut" x="177.075" y="27.075" width="7.95" height="2.9"/>
+<polygon class="cut" points="9.925,59.925 70.075,59.925 70.075,78.075 28.075,78.075 28.075,70.075 19.925,70.075 19.925,78.075 9.925,78.075"/>
+</g><g id="SCORE">
+<text class="label" x="10" y="8">Ranures acabades (mm): prova-hi directament el cantell del teu tauler</text>
+<text class="label" x="16" y="41" text-anchor="middle">2.80</text>
+<text class="label" x="27" y="41" text-anchor="middle">2.85</text>
+<text class="label" x="38" y="41" text-anchor="middle">2.90</text>
+<text class="label" x="49" y="41" text-anchor="middle">2.95</text>
+<text class="label" x="60" y="41" text-anchor="middle">3.00</text>
+<text class="label" x="71" y="41" text-anchor="middle">3.05</text>
+<text class="label" x="82" y="41" text-anchor="middle">3.10</text>
+<text class="label" x="93" y="41" text-anchor="middle">3.15</text>
+<text class="label" x="104" y="41" text-anchor="middle">3.20</text>
+<text class="label" x="126" y="8">Prova llengüeta nominal 8 mm</text>
+<text class="label" x="135" y="51" text-anchor="middle">-0.05</text>
+<text class="label" x="158" y="51" text-anchor="middle">+0.00</text>
+<text class="label" x="181" y="51" text-anchor="middle">+0.05</text>
+<text class="label" x="10" y="84">Peça-test: cantell real + llengüeta de 8 mm</text>
+</g></svg>

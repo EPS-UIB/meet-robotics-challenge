@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="420mm" height="297mm" viewBox="0 0 420 297">
+  <title>Barrera de la zona lila: base, muntants i paret</title>
+  <metadata>Unitats: mm. Vermell = tall, blau = gravat. Kerf de 0,15 mm incorporat.</metadata>
+  <style>
+    .cut { fill:none; stroke:#ff0000; stroke-width:0.10; }
+    .label { fill:#0066ff; font-family:Arial,sans-serif; font-size:4px; }
+  </style>
+<polygon class="cut" points="8.075,155.925 98.925,155.925 98.925,8.075 8.075,8.075"/>
+<rect class="cut" x="32.55" y="147.025" width="29.9" height="5.95"/>
+<rect class="cut" x="47.55" y="57.55" width="2.9" height="39.9"/>
+<text class="label" x="13" y="143">BASE</text>
+<polygon class="cut" points="109.925,29.925 179.075,29.925 179.075,127.075 159.575,127.075 159.575,130.075 129.425,130.075 129.425,127.075 109.925,127.075"/>
+<circle class="cut" cx="146" cy="50" r="2.025"/>
+<circle class="cut" cx="114.887" cy="61.314" r="2.025"/>
+<circle class="cut" cx="174.675" cy="66.544" r="2.025"/>
+<rect class="cut" x="144.55" y="70.05" width="2.9" height="29.9"/>
+<text class="label" x="113" y="124">MUNTANT 1</text>
+<polygon class="cut" points="194.925,29.925 264.075,29.925 264.075,127.075 244.575,127.075 244.575,130.075 214.425,130.075 214.425,127.075 194.925,127.075"/>
+<circle class="cut" cx="231" cy="50" r="2.025"/>
+<circle class="cut" cx="199.887" cy="61.314" r="2.025"/>
+<circle class="cut" cx="259.675" cy="66.544" r="2.025"/>
+<rect class="cut" x="229.55" y="70.05" width="2.9" height="29.9"/>
+<text class="label" x="198" y="124">MUNTANT 2</text>
+<polygon class="cut" points="103.925,135.925 243.075,135.925 243.075,233.075 193.575,233.075 193.575,236.075 153.425,236.075 153.425,233.075 103.925,233.075 103.925,206.075 97.925,206.075 97.925,175.925 103.925,175.925"/>
+<text class="label" x="144" y="151">PARET</text>
+</svg>
