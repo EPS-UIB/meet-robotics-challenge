@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Barrera fixa de la zona lila. Revisió 3.
+"""Barrera fixa de la zona lila. Revisió 4.
 
 Tipus pàrquing: una sola peça mòbil, impresa en 3D, amb el braç i una pala que
-sobresurt. Un robot empeny la pala i la barrera puja. El gir queda limitat entre
+sobresurt. Un faldó sota el braç impedeix que una bobina tombada passi per sota de
+la barrera tancada. Un robot empeny la pala i la barrera puja. El gir queda limitat entre
 0° i 80° per dos topalls, i la barrera es tanca pel seu propi pes. El conjunt és
 independent del receptacle i es col·loca al seu costat.
 
@@ -19,6 +20,12 @@ KERF = 0.15
 SLOT = T + 0.05
 ARM_LENGTH = 245.0
 ARM_WIDTH = 20.0
+SKIRT_START = 40.0  # distància de l'eix on comença el faldó
+SKIRT_BOTTOM = 35.0  # altura del cantell inferior del faldó sobre el taulell
+BOBBIN_LYING = 50.0  # altura d'una bobina tombada (diàmetre dels extrems)
+BOBBIN_STANDING = 80.0
+PASSAGE_START = 58.0  # distància de l'eix a la paret lateral del receptacle
+WALL_FACE = 1.5  # cara de la paret fixa, a la dreta de l'eix
 PADDLE_LENGTH = 65.0
 PADDLE_WIDTH = 24.0
 PADDLE_ANGLE = 225.0  # direcció de la pala, amb la barrera tancada
@@ -55,9 +62,12 @@ def moving_outline():
         t = (z - side * h * nz) / dz
         return side * h * nx + t * dx, z
 
+    skirt = SKIRT_BOTTOM - AXIS_HEIGHT
     return [
         (ARM_LENGTH, hw),
-        (ARM_LENGTH, -hw),
+        (ARM_LENGTH, skirt),
+        (SKIRT_START, skirt),
+        (SKIRT_START, -hw),
         on_edge(1, -hw),
         (h * nx + PADDLE_LENGTH * dx, h * nz + PADDLE_LENGTH * dz),
         (-h * nx + PADDLE_LENGTH * dx, -h * nz + PADDLE_LENGTH * dz),
@@ -193,6 +203,16 @@ def windows():
     return [(start + i * (length + rib), length) for i in range(WINDOW_COUNT)]
 
 
+def skirt_box():
+    """Faldó: extrem esquerre, extrem dret, z superior i z inferior, des de l'eix."""
+    return SKIRT_START, ARM_LENGTH, -ARM_WIDTH / 2, SKIRT_BOTTOM - AXIS_HEIGHT
+
+
+def skirt_mass():
+    x0, x1, z0, z1 = skirt_box()
+    return (x1 - x0) * (z0 - z1) * T * PRINT_DENSITY
+
+
 def part_mass():
     """Massa (g) del braç, la pala i la superfície de contacte, impresos en 3D."""
     window_area = sum(length * WINDOW_WIDTH for _, length in windows())
@@ -207,14 +227,17 @@ def closing_moment(angle):
     g = 9.81e-3
     paddle_dir = direction(PADDLE_ANGLE + angle)
     arm_dir = direction(angle)
-    return g * (arm * ARM_LENGTH / 2 * arm_dir[0]
+    x0, x1, z0, z1 = skirt_box()
+    cx, cz = (x0 + x1) / 2, (z0 + z1) / 2
+    skirt = skirt_mass() * (cx * arm_dir[0] - cz * arm_dir[1])
+    return g * (skirt + arm * ARM_LENGTH / 2 * arm_dir[0]
                 + paddle * PADDLE_LENGTH / 2 * paddle_dir[0]
                 + blade * PADDLE_LENGTH * paddle_dir[0])
 
 
 def report():
     arm, paddle, blade = part_mass()
-    total = arm + paddle + blade
+    total = arm + paddle + blade + skirt_mass()
     friction = total * 9.81e-3 * BOLT_FRICTION * BOLT_HOLE / 2
     worst = float("inf")
     max_force = 0.0
@@ -233,6 +256,20 @@ def report():
     print(f"Punta de la pala: tancada x={PADDLE_LENGTH * tip_closed[0]:.0f}, z={AXIS_HEIGHT + PADDLE_LENGTH * tip_closed[1]:.0f}; "
           f"oberta x={PADDLE_LENGTH * tip_open[0]:.0f}, z={AXIS_HEIGHT + PADDLE_LENGTH * tip_open[1]:.0f}")
     print(f"Topalls: tancat ({closed_stop[0]:.1f}, {closed_stop[1]:.1f}), obert ({open_stop[0]:.1f}, {open_stop[1]:.1f})")
+    x0, x1, z0, z1 = skirt_box()
+    a = radians(OPEN_ANGLE)
+    lowest = min(AXIS_HEIGHT + x * sin(a) + z * cos(a)
+                 for x in (x0 + i * (x1 - x0) / 100 for i in range(101)) for z in (z0, z1)
+                 if x * cos(a) - z * sin(a) >= PASSAGE_START)
+    print(f"Faldó: de x={x0:.0f} a {x1:.0f} mm, cantell inferior a {SKIRT_BOTTOM:.0f} mm del taulell; "
+          f"pas lliure entre la paret i el faldó: {x0 - WALL_FACE:.1f} mm")
+    print(f"Barrera oberta: punt més baix del faldó sobre el pas del receptacle a {lowest:.0f} mm")
+    if SKIRT_BOTTOM > BOBBIN_LYING - 10 or x0 - WALL_FACE > BOBBIN_LYING - 10:
+        raise SystemExit("VALIDACIÓ FALLIDA: una bobina tombada pot passar per sota de la barrera")
+    if hypot(x0, z0) < hypot(*open_stop) + PIN_RADIUS + 4:
+        raise SystemExit("VALIDACIÓ FALLIDA: el faldó topa amb el topall d'obertura")
+    if lowest < BOBBIN_STANDING + 10:
+        raise SystemExit("VALIDACIÓ FALLIDA: amb la barrera oberta, el faldó no deixa passar una bobina dreta")
     if worst <= 3 * friction:
         raise SystemExit("VALIDACIÓ FALLIDA: el pes no garanteix el tancament")
     if open_stop[0] + 4 > UPRIGHT_RIGHT or -closed_stop[0] + 4 > UPRIGHT_LEFT:
