@@ -16,7 +16,7 @@ Executa'l amb `python3 generate_barrera.py` (làmina) o amb `PYTHONIOENCODING=ut
 
 ## Impressió de la peça mòbil
 
-PLA, 0,2 mm de capa, 2 perímetres i 30 % de farciment, amb la cara plana sobre el llit. La massa estimada és de 36 g, i la força horitzontal màxima per obrir-la, d'uns 0,7 N; cal pesar el prototip i comprovar que un robot l'obre.
+PLA, 0,2 mm de capa, 2 perímetres i 30 % de farciment, amb la cara plana sobre el llit. El braç i el faldó tenen tres finestres de 59 × 44 mm per alleugerir-la; el seu cantell inferior queda a 41 mm del taulell, i una bobina tombada (50 mm) no hi cap. La massa estimada és de 21 g, i la força horitzontal màxima per obrir-la, d'uns 0,25 N; cal pesar el prototip i comprovar que un robot l'obre.
 
 ## Muntatge
 

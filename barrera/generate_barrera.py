@@ -38,7 +38,8 @@ UPRIGHT_LEFT, UPRIGHT_RIGHT = 36.0, 33.0
 UPRIGHT_TOP = 100.0
 BLADE_WIDTH, BLADE_HEIGHT = 50.0, 30.0
 WALL_LENGTH, WALL_HEIGHT = 139.0, 100.0
-WINDOW_COUNT, WINDOW_WIDTH = 3, 12.0
+WINDOW_COUNT, WINDOW_RIB = 3, 6.0  # finestres del braç i el faldó, i nervis entre elles
+WINDOW_EDGE = 5.0  # cantell superior que queda sobre les finestres
 PRINT_DENSITY = 0.00093  # g/mm³: PLA amb 2 perímetres i 30 % de farciment, a 3 mm de gruix
 BOLT_FRICTION = 0.3
 
@@ -197,10 +198,28 @@ def sheet():
 
 
 def windows():
-    """Finestres del braç: alleugereixen la peça impresa."""
-    start, end, rib = 30.0, ARM_LENGTH - 10.0, 6.0
+    """Finestres del braç i el faldó: alleugereixen la peça impresa.
+
+    Cada finestra és (inici, llargada, z superior, z inferior), des de l'eix.
+    """
+    rib = WINDOW_RIB
+    start, end = SKIRT_START + rib, ARM_LENGTH - 10.0
+    z_top = ARM_WIDTH / 2 - WINDOW_EDGE
+    z_bottom = SKIRT_BOTTOM - AXIS_HEIGHT + rib
     length = (end - start - (WINDOW_COUNT - 1) * rib) / WINDOW_COUNT
-    return [(start + i * (length + rib), length) for i in range(WINDOW_COUNT)]
+    return [(start + i * (length + rib), length, z_top, z_bottom) for i in range(WINDOW_COUNT)]
+
+
+def plate_pieces():
+    """Rectangles de la placa (braç i faldó) amb signe: +1 material, -1 finestra.
+
+    Cada peça és (signe, x0, x1, z0, z1); la pala va a part.
+    """
+    hw = ARM_WIDTH / 2
+    x0, x1, z0, z1 = skirt_box()
+    pieces = [(1, 0.0, ARM_LENGTH, -hw, hw), (1, x0, x1, z1, z0)]
+    pieces += [(-1, s, s + length, bottom, top) for s, length, top, bottom in windows()]
+    return pieces
 
 
 def skirt_box():
@@ -208,15 +227,9 @@ def skirt_box():
     return SKIRT_START, ARM_LENGTH, -ARM_WIDTH / 2, SKIRT_BOTTOM - AXIS_HEIGHT
 
 
-def skirt_mass():
-    x0, x1, z0, z1 = skirt_box()
-    return (x1 - x0) * (z0 - z1) * T * PRINT_DENSITY
-
-
 def part_mass():
-    """Massa (g) del braç, la pala i la superfície de contacte, impresos en 3D."""
-    window_area = sum(length * WINDOW_WIDTH for _, length in windows())
-    arm = (ARM_LENGTH * ARM_WIDTH - window_area) * T * PRINT_DENSITY
+    """Massa (g) de la placa (braç i faldó), la pala i la superfície de contacte."""
+    arm = sum(s * (x1 - x0) * (z1 - z0) for s, x0, x1, z0, z1 in plate_pieces()) * T * PRINT_DENSITY
     paddle = PADDLE_LENGTH * PADDLE_WIDTH * T * PRINT_DENSITY
     blade = BLADE_WIDTH * BLADE_HEIGHT * T * PRINT_DENSITY
     return arm, paddle, blade
@@ -227,17 +240,17 @@ def closing_moment(angle):
     g = 9.81e-3
     paddle_dir = direction(PADDLE_ANGLE + angle)
     arm_dir = direction(angle)
-    x0, x1, z0, z1 = skirt_box()
-    cx, cz = (x0 + x1) / 2, (z0 + z1) / 2
-    skirt = skirt_mass() * (cx * arm_dir[0] - cz * arm_dir[1])
-    return g * (skirt + arm * ARM_LENGTH / 2 * arm_dir[0]
+    plate = sum(s * (x1 - x0) * (z1 - z0) * T * PRINT_DENSITY
+                * ((x0 + x1) / 2 * arm_dir[0] - (z0 + z1) / 2 * arm_dir[1])
+                for s, x0, x1, z0, z1 in plate_pieces())
+    return g * (plate
                 + paddle * PADDLE_LENGTH / 2 * paddle_dir[0]
                 + blade * PADDLE_LENGTH * paddle_dir[0])
 
 
 def report():
     arm, paddle, blade = part_mass()
-    total = arm + paddle + blade + skirt_mass()
+    total = arm + paddle + blade
     friction = total * 9.81e-3 * BOLT_FRICTION * BOLT_HOLE / 2
     worst = float("inf")
     max_force = 0.0
@@ -264,6 +277,11 @@ def report():
     print(f"Faldó: de x={x0:.0f} a {x1:.0f} mm, cantell inferior a {SKIRT_BOTTOM:.0f} mm del taulell; "
           f"pas lliure entre la paret i el faldó: {x0 - WALL_FACE:.1f} mm")
     print(f"Barrera oberta: punt més baix del faldó sobre el pas del receptacle a {lowest:.0f} mm")
+    s, length, top, bottom = windows()[0]
+    print(f"Finestres: {WINDOW_COUNT} de {length:.0f} × {top - bottom:.0f} mm, "
+          f"amb el cantell inferior a {AXIS_HEIGHT + bottom:.0f} mm del taulell")
+    if top - bottom > BOBBIN_LYING - 5:
+        raise SystemExit("VALIDACIÓ FALLIDA: una bobina tombada cap per una finestra")
     if SKIRT_BOTTOM > BOBBIN_LYING - 10 or x0 - WALL_FACE > BOBBIN_LYING - 10:
         raise SystemExit("VALIDACIÓ FALLIDA: una bobina tombada pot passar per sota de la barrera")
     if hypot(x0, z0) < hypot(*open_stop) + PIN_RADIUS + 4:
@@ -288,9 +306,8 @@ def write_moving_part():
         return face.extrude(Vector(0, 0, z1 - z0))
 
     solid = prism(moving_outline(), 0, T)
-    for start, length in windows():
-        h = WINDOW_WIDTH / 2
-        solid = solid.cut(prism([(start, -h), (start + length, -h), (start + length, h), (start, h)], -1, T + 1))
+    for start, length, top, bottom in windows():
+        solid = solid.cut(prism([(start, bottom), (start + length, bottom), (start + length, top), (start, top)], -1, T + 1))
     solid = solid.cut(Part.makeCylinder(BOLT_HOLE / 2, T + 2, Vector(0, 0, -1)))
     dx, dz = direction(PADDLE_ANGLE)
     nx, nz = -dz, dx

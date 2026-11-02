@@ -27,7 +27,7 @@ FLOOR = np.array([0.62, 0.62, 0.61])
 
 OUTLINE = np.array([(245, 10), (245, -45), (40, -45), (40, -10), (6.98, -10), (-37.47, -54.45), (-54.45, -37.47), (-6.98, 10)], float)
 BLADE = np.array([(-35.39, -56.57), (-37.51, -54.45), (-58.73, -33.24), (-56.61, -35.36)], float)
-WINDOWS = [(30 + i * (64.33 + 6), 64.33) for i in range(3)]
+WINDOWS = [(46 + i * (59 + 6), 59) for i in range(3)]  # z de 41 a 85 mm del taulell
 STOPS = ((-31.1, -11.3), (28.7, -16.5))
 
 
@@ -90,7 +90,7 @@ def build(offsets):
     def moving(p):
         d = sd_extruded(p, OUTLINE, -3, 0)
         for start, length in WINDOWS:
-            d = np.maximum(d, -sd_box(p, (start, -5, 74), (start + length, 2, 86)))
+            d = np.maximum(d, -sd_box(p, (start, -5, 41), (start + length, 2, 85)))
         d = np.maximum(d, -sd_ycyl(p, 0, 80, 2.2, -5, 2))
         return np.minimum(d, sd_extruded(p, BLADE, -50, 0))
 
